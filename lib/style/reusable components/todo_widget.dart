@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:todo_app/model/task.dart';
 import 'package:todo_app/model/task_collection.dart';
 import 'package:todo_app/providers/edit_controller.dart';
+import 'package:todo_app/providers/todo_provider.dart';
 import 'package:todo_app/providers/user_provider.dart';
 import 'package:todo_app/style/dialog_utils.dart';
 import 'package:todo_app/style/reusable%20components/text_form_field.dart';
@@ -168,8 +169,7 @@ class _ToDoWidgetState extends State<ToDoWidget> {
         positiveonTap: () async {
           Navigator.pop(context);
           DialogUtils.showLoginDialog(context: context);
-          await Task.deleteTask(
-              provider.firebaseAuth!.uid, widget.task.id ?? "");
+          await delete(provider.firebaseAuth!.uid, widget.task.id ?? "");
           Navigator.pop(context);
         });
   }
@@ -263,8 +263,9 @@ class _ToDoWidgetState extends State<ToDoWidget> {
 
   saveChanges(){if(formKey.currentState?.validate()??false){
     Navigator.pop(context);
-    UserProvider userProvider=Provider.of<UserProvider>(context);
+    TodoProvider todoProvider=Provider.of<TodoProvider>(context,listen :false);
     EditProvider provider = Provider.of<EditProvider>(context, listen: false);
+    UserProvider userProvider =Provider.of<UserProvider>(context,listen: false);
     provider.descriptionController=descriptionController;
     provider.titleController=taskController;
     TaskCollection.createTask(Task(id:FirebaseAuth.instance.currentUser!.uid,
@@ -273,10 +274,14 @@ class _ToDoWidgetState extends State<ToDoWidget> {
     description: provider.descriptionController.text,
     isDone: false), FirebaseAuth.instance.currentUser!.uid);
     Navigator.pop(context);
-    userProvider.refreshTasks();
-    setState(() {
-    });
+    todoProvider.refreshTasks(userProvider.firebaseAuth!.uid);
+  }
   }
 
-  }
+  delete(String userId, String taskId) async{ TodoProvider todoProvider = Provider.of<TodoProvider>(context,listen: false);
+  UserProvider provider = Provider.of<UserProvider>(context, listen: false);
+  var collection = TaskCollection.getTaskCollection(userId);
+  var doc = collection.doc(taskId);
+  await doc.delete();
+  todoProvider.refreshTasks(provider.firebaseAuth!.uid);}
 }

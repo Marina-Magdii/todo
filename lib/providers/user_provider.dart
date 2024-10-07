@@ -1,9 +1,6 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/model/my_user.dart';
-import 'package:todo_app/model/task.dart';
-import 'package:todo_app/model/task_collection.dart';
 import 'package:todo_app/model/user_collection.dart';
 
 class UserProvider extends ChangeNotifier{
@@ -32,8 +29,5 @@ class UserProvider extends ChangeNotifier{
     fireStoreUser=null;
     firebaseAuth=null;
     return await FirebaseAuth.instance.signOut();
-  }
-  refreshTasks()async{
-    await TaskCollection.getTaskCollection(firebaseAuth!.uid);
   }
 }

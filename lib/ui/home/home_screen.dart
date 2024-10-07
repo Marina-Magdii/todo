@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/App%20Style/app_style.dart';
+import 'package:todo_app/providers/todo_provider.dart';
 import 'package:todo_app/providers/user_provider.dart';
 import 'package:todo_app/style/bottom_sheet.dart';
 import 'package:todo_app/ui/home/tabs/settings_tab.dart';
@@ -20,10 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
    List<Widget>tabs=[Tasks(),Settings()];
 
    int index=0;
-
+   
   @override
   Widget build(BuildContext context) {
-    UserProvider provider =Provider.of<UserProvider>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

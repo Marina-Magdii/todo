@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/model/task.dart';
 import 'package:todo_app/model/user_collection.dart';
 
@@ -23,4 +24,12 @@ class TaskCollection{
     List<Task> tasks = snapshot.docs.map((snapshot) => snapshot.data()).toList();
     return tasks;
   }
+  static Stream<List<Task>>newGetTasks(String userId)async*{
+    var collectionRef = getTaskCollection(userId);
+    var snapshot = collectionRef.snapshots();
+    var queryDocList=snapshot.map((snapshotOfTask)=>snapshotOfTask.docs);
+    var tasks=queryDocList.map((document)=>document.map((docs) => docs.data()).toList());
+    yield* tasks;
+  }
+
 }

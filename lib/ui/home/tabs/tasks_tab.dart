@@ -10,23 +10,32 @@ class Tasks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider provider= Provider.of<UserProvider>(context);
-    return FutureBuilder(
-        future: TaskCollection.getTasks(provider.firebaseAuth!.uid),
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    return StreamBuilder(
+        stream: TaskCollection.newGetTasks(userProvider.firebaseAuth!.uid),
         builder: (context,snapshot){
           if(snapshot.connectionState==ConnectionState.waiting){
-            return Center(child: CircularProgressIndicator());
+            return const Center(child:  CircularProgressIndicator(),);
           }
-          else if(snapshot.hasError){
-            return Text(snapshot.error.toString());
+          else if (snapshot.hasError){
+            return Center(child: Text(snapshot.error!.toString()));
           }
-          List<Task>tasks=snapshot.data??[];
-          return  ListView.separated(
-              itemBuilder: (context, index) => ToDoWidget(task: tasks[index],),
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 5,);
-              },
-              itemCount: tasks.length);
+          else
+            {
+              List<Task>tasks=snapshot.data??[];
+              return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    return ToDoWidget(task: tasks[index]);
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      height: 10,
+                    );
+                  },
+                  itemCount: tasks.length),
+            );}
         });
   }
 }

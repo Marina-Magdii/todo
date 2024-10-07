@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/model/task_collection.dart';
+
+import '../providers/todo_provider.dart';
+import '../providers/user_provider.dart';
 
 class Task{
   static const String collectionName="Tasks";
@@ -27,9 +31,5 @@ class Task{
     };
 
   }
-  static Future<void>deleteTask(String userId, String taskId)async{
-    var collection = TaskCollection.getTaskCollection(userId);
-    var doc = collection.doc(taskId);
-    await doc.delete();
-  }
+
 }

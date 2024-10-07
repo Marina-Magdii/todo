@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/model/task.dart';
 import 'package:todo_app/model/task_collection.dart';
 import 'package:todo_app/providers/edit_controller.dart';
+import 'package:todo_app/providers/todo_provider.dart';
 import 'package:todo_app/providers/user_provider.dart';
 import 'package:todo_app/style/dialog_utils.dart';
 import 'package:todo_app/style/reusable%20components/text_form_field.dart';
@@ -115,6 +115,7 @@ class _TaskSheetState extends State<TaskSheet> {
   }
 
   addTask() async {
+    TodoProvider todoProvider = Provider.of<TodoProvider>(context,listen: false);
     DialogUtils.showLoginDialog(context: context);
     UserProvider provider = Provider.of<UserProvider>(context, listen: false);
     if (formKey.currentState?.validate() ?? false) {
@@ -135,6 +136,7 @@ class _TaskSheetState extends State<TaskSheet> {
             Navigator.pop(context);
             Navigator.pop(context);
           });
+      todoProvider.refreshTasks(provider.firebaseAuth!.uid);
     }
   }
 }
